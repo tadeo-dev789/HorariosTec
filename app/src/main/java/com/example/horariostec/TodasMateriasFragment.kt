@@ -1,6 +1,7 @@
 package com.example.horariostec
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.horariostec.scrapper.HtmlScrapper
 import com.example.horariostec.scrapping.MateriasAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class TodasMateriasFragment : Fragment() {
@@ -33,26 +38,44 @@ class TodasMateriasFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
-        // Aquí debes usar tu lista de materias extraída (sustituye "materias" por la que generas)
+        //Aqui debo descargar el html
         val htmlScrapper = HtmlScrapper(requireContext())
-        val tableData = htmlScrapper.extractTableDataFromFile("Sistemas.html")
-        val tableMaterias = htmlScrapper.convertToMateriasList(tableData)
+        val especialidad = "1"
 
-        adapter.updateList(tableMaterias)
+        //Descargar el html
+        CoroutineScope(Dispatchers.IO).launch {
+            try{
+                //USar la api creada para extraer los html
+                val html = htmlScrapper.fetchHtmlFromServer(especialidad)
 
-        //BUSCAR MATERIAS<
-        editTextSearch.addTextChangedListener { text->
-            val query = text.toString().uppercase()
+                //Procesar el html y extraer los datos
 
-            //Filtrar las materias
-            val materiasFiltradas = tableMaterias.filter { materia->
-                materia.materia.uppercase().contains(query)||
-                        materia.grupo.uppercase().contains(query)||
-                        materia.catedratico.uppercase().contains(query)
+                val tableData = htmlScrapper.extractTableData(html)
+                val tableMaterias = htmlScrapper.convertToMateriasList(tableData)
+
+                //ACtualizar en el hilo principal
+
+                withContext(Dispatchers.Main){
+                    adapter.updateList(tableMaterias)
+
+                    //BUSCAR MATERIAS<
+                    editTextSearch.addTextChangedListener { text->
+                        val query = text.toString().uppercase()
+
+                        //Filtrar las materias
+                        val materiasFiltradas = tableMaterias.filter { materia->
+                            materia.materia.uppercase().contains(query)||
+                                    materia.grupo.uppercase().contains(query)||
+                                    materia.catedratico.uppercase().contains(query)
+                        }
+
+                        //Actualizar el adaptador
+                        adapter.updateList(materiasFiltradas)
+                }
             }
-
-            //Actualizar el adaptador
-            adapter.updateList(materiasFiltradas)
+        }catch (e: Exception){
+            Log.e("TodasMateriasFragment","Error al descargar el horario")
+        }
 
         }
 

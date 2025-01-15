@@ -45,7 +45,8 @@ dependencies {
     implementation(libs.jsoup)
     implementation (libs.retrofit)
     implementation (libs.converter.scalars)
-    implementation (libs.logging.interceptor) // Para depuración de red
+    implementation (libs.logging.interceptor)
+    implementation(libs.androidx.espresso.core) // Para depuración de red
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

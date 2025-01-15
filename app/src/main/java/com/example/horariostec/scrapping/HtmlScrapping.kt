@@ -1,15 +1,28 @@
 package com.example.horariostec.scrapper
 
 import android.content.Context
+import com.example.horariostec.scrappin.HorariosApi
 import com.example.horariostec.scrapping.Materia
+import com.example.horariostec.scrapping.RetroFitClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
 
 class HtmlScrapper(private val context: Context) {
 
-    fun readHtmlFromAssets(fileName: String): String {
-        return context.assets.open(fileName).bufferedReader().use { it.readText() }
+    suspend fun fetchHtmlFromServer(especialidad: String):String{
+        return withContext(Dispatchers.IO){
+
+            val api = RetroFitClient.instance.create(HorariosApi::class.java)
+            val response = api.obtenerHorario(especialidad).execute()
+            if(response.isSuccessful){
+                response.body()?:throw Exception("El servidor devolvió una respuesta vacía.")
+            }else {
+                throw Exception("Error al obtener horario: ${response.code()}")
+            }
+        }
     }
 
     fun extractTableData(html:String): MutableList<Map<String,String>>{
@@ -42,11 +55,6 @@ class HtmlScrapper(private val context: Context) {
             }
         }
         return result
-    }
-
-    fun extractTableDataFromFile(fileName: String): MutableList<Map<String, String>> {
-        val html = readHtmlFromAssets(fileName)
-        return extractTableData(html)
     }
 
     fun convertToMateriasList(tableData: MutableList<Map<String,String>>):MutableList<Materia>{
