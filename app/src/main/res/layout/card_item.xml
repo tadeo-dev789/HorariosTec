@@ -1,0 +1,47 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvMateriaNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre de la materia"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvGrupo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Grupo"
+            android:textSize="16sp"
+            android:paddingBottom="2dp" />
+
+        <TextView
+            android:id="@+id/tvCatedratico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Catedrático"
+            android:textSize="16sp"
+            android:paddingBottom="2dp" />
+
+        <TextView
+            android:id="@+id/tvHorario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Horario"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
