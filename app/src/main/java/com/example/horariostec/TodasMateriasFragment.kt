@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.horariostec.scrapper.HtmlScrapper
+import com.example.horariostec.scrapper.HtmlScrapping
 import com.example.horariostec.scrapping.MateriasAdapter
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +21,8 @@ import kotlinx.coroutines.withContext
 
 
 class TodasMateriasFragment : Fragment() {
+
+    private lateinit var  sharedViewModel: SharedViewModel
 
 
     override fun onCreateView(
@@ -28,18 +32,30 @@ class TodasMateriasFragment : Fragment() {
 
         val rootView = inflater.inflate(R.layout.fragment_todas_materias, container, false)
 
+        // Inicializar el ViewModel compartido
+        sharedViewModel = (activity as MainActivity).run {
+            androidx.lifecycle.ViewModelProvider(this)[SharedViewModel::class.java]
+        }
+
+        // Configura el callback para mostrar mensajes
+        sharedViewModel.onMessageCallback = { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        }
 
         // Obtén el RecyclerView del layout
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.recyclerViewMaterias)
         val editTextSearch = rootView.findViewById<EditText>(R.id.editTextSearch)
 
-        val adapter = MateriasAdapter(mutableListOf())
+        val adapter = MateriasAdapter(mutableListOf()){materia->
+            //AL hacer click agregarla
+            sharedViewModel.agregarMateria(materia)
+        }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
         //Aqui debo descargar el html
-        val htmlScrapper = HtmlScrapper(requireContext())
+        val htmlScrapper = HtmlScrapping(requireContext())
         val especialidad = "1"
 
         //Descargar el html

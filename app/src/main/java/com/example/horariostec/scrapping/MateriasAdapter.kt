@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.horariostec.R
 import org.w3c.dom.Text
 
-class MateriasAdapter(private var ListaMaterias: MutableList<Materia>):RecyclerView.Adapter<MateriasAdapter.MateriaViewHolder>(){
+class MateriasAdapter(private var ListaMaterias: MutableList<Materia>,private val onClick: (Materia)->Unit
+):RecyclerView.Adapter<MateriasAdapter.MateriaViewHolder>(){
 
     //Debemos de crear las vistas de cada tarjera
     class MateriaViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
@@ -33,6 +34,10 @@ class MateriasAdapter(private var ListaMaterias: MutableList<Materia>):RecyclerV
         holder.textCated.text = "Catedrático: ${materia.catedratico}"
         holder.textHorario.text = "Horario: ${materia.lunes}"
 
+        //Manejar clics
+        holder.itemView.setOnClickListener{
+            onClick(materia)
+        }
     }
 
     //Regresa el total de las materias

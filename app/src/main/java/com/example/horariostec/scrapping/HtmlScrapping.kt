@@ -10,7 +10,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
 
-class HtmlScrapper(private val context: Context) {
+class HtmlScrapping(private val context: Context) {
 
     suspend fun fetchHtmlFromServer(especialidad: String):String{
         return withContext(Dispatchers.IO){
