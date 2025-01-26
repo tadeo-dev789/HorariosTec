@@ -19,7 +19,9 @@ class MateriasSeleccionadasFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View {
+
 
         // Inflar la vista raíz
         val rootView = inflater.inflate(R.layout.fragment_materias_seleccionadas, container, false)
@@ -36,13 +38,30 @@ class MateriasSeleccionadasFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-
-
-        // Observar cambios en las materias seleccionadas
+        // Observar cambios en las materias seleccionadas y ordenarlas por hora
         sharedViewModel.materiasSeleccionadas.observe(viewLifecycleOwner) { materiasSeleccionadas ->
-            adapter.updateList(materiasSeleccionadas)
+            val materiasOrdenadas = materiasSeleccionadas.sortedBy { materia ->
+                extraerHoraMinuto(materia.lunes)
+            }
+            adapter.updateList(materiasOrdenadas)
         }
 
         return rootView
     }
+
+    private fun extraerHoraMinuto(horario: String): Int {
+        return try {
+            val horarioSinAula = horario.split("/")[0]
+
+            val horaMinuto = horarioSinAula.split("-")[0].split(":")
+
+            val hora = horaMinuto[0].toInt()
+            val minuto = horaMinuto[1].toInt()
+            hora * 100 + minuto  // Convertimos a formato HHMM para fácil ordenación
+        } catch (e: Exception) {
+            Int.MAX_VALUE  // Si hay error, poner al final de la lista
+        }
+    }
+
+
 }

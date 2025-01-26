@@ -13,12 +13,12 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@color/white"
-        app:tabSelectedTextColor="@color/white"
-        app:tabTextColor="@android:color/darker_gray"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabIndicatorColor="@color/design_default_color_primary_dark"
+        app:tabSelectedTextColor="@color/black"
+        app:tabTextColor="@color/black" />
 
     <!-- ViewPager2 para los fragmentos -->
     <androidx.viewpager2.widget.ViewPager2
